@@ -20,11 +20,10 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-import config as cf
+import config
 import sys
 import controller
-from DISClib.ADT import list as lt
-assert cf
+assert config
 
 
 """
@@ -34,12 +33,38 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
+# ___________________________________________________
+#  Variables
+# ___________________________________________________
+
+
+servicefile = 'connections.csv'
+catalog = None
+
+
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Inicializar Analizador")
+    print("2- Cargar información en el catálogo")
+    print("3- Landing point belonging to a cluster")
+    print("4- Landing point as a connection point")
+    print("5- Ruta minima para enviar entre paises")
+    print("6- Red de expansion minima")
+    print("7- Lista de paises afectados")
+    print("8- Ancho de banda maximo por pais")
+    print("9- Ruta minima para enviar datos a una ip")
+    print("0- Salir del sistema")
 
-catalog = None
+
+def optionTwo(cont):
+    print("\nCargando información de los cables...")
+    controller.loadServices(cont, servicefile)
+    numedges = controller.totalConnections(cont)
+    numvertex = controller.totalStops(cont)
+    print('Numero de vertices: ' + str(numvertex))
+    print('Numero de arcos: ' + str(numedges))
+    print('El limite de recursion actual: ' + str(sys.getrecursionlimit()))
+
 
 """
 Menu principal
@@ -48,9 +73,40 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
+        print("\nInicializando....")
+        # cont es el controlador que se usará de acá en adelante
+        cont = controller.init()
 
     elif int(inputs[0]) == 2:
+        print("Cargando información de los archivos ....")
+        optionTwo(cont)
+
+    elif int(inputs[0]) == 3:
+        print("Cargando información de los archivos ....")
+        pass
+
+    elif int(inputs[0]) == 4:
+        print("Cargando información de los archivos ....")
+        pass
+
+    elif int(inputs[0]) == 5:
+        print("Cargando información de los archivos ....")
+        pass
+
+    elif int(inputs[0]) == 6:
+        print("Cargando información de los archivos ....")
+        pass
+
+    elif int(inputs[0]) == 7:
+        print("Cargando información de los archivos ....")
+        pass
+
+    elif int(inputs[0]) == 8:
+        print("Cargando información de los archivos ....")
+        pass
+
+    elif int(inputs[0]) == 9:
+        print("Cargando información de los archivos ....")
         pass
 
     else:
