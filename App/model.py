@@ -28,7 +28,7 @@
 import config as cf
 from DISClib.ADT.graph import gr
 # from DISClib.ADT import list as lt
-# from DISClib.ADT import map as m
+from DISClib.ADT import map as m
 # from DISClib.DataStructures import mapentry as me
 # from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Utils import error as error
@@ -42,7 +42,16 @@ listas, una para los videos, otra para las categorias de los mismos.
 
 def newAnalyzer():
     try:
-        analyzer = {'connections': None}
+        analyzer = {'landingPoint': None,
+                    'connections': None,
+                    'country': None,
+        
+                   }
+
+
+        analyzer['landingPoint'] = m.newMap(numelements=14000,
+                                     maptype='PROBING',
+                                     comparefunction=compareStopIds)
 
         analyzer['connections'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
@@ -57,41 +66,48 @@ def newAnalyzer():
 # Construccion de modelos
 # ==============================
 
-def addStopConnection(analyzer, lastservice, service):
+def addLandingConnections(analyzer, service):
 
     try:
-        origin = formatVertex(lastservice)
-        destination = formatVertex(service)
+        origin = formatOriginVertex(service)
+        destination = formatDestinationVertex(service)
         distance = service['cable_length']
-        addCable(analyzer, origin)
-        addCable(analyzer, destination)
-        addConnection(analyzer, origin, destination, distance)
+        addPoint(analyzer, origin)
+        addPoint(analyzer, destination)
+        addConnections(analyzer, origin, destination, distance)
         return analyzer
     except Exception as exp:
-        error.reraise(exp, 'model:addStopConnection')
-
+        error.reraise(exp, 'model:addLandingConnections')
 
 # ==============================
 # Funciones para agregar informacion al catalogo
 # ==============================
 
-def addCable(analyzer, stopid):
+def addPoint(analyzer, stopid):
+    """
+    Adiciona una estación como un vertice del grafo
+    """
     try:
         if not gr.containsVertex(analyzer['connections'], stopid):
             gr.insertVertex(analyzer['connections'], stopid)
         return analyzer
     except Exception as exp:
-        error.reraise(exp, 'model:addstop')
+        error.reraise(exp, 'model:addPoint')
 
 
-def addConnection(analyzer, origin, destination, distance):
+def addConnections(analyzer, origin, destination, distance):
     """
     Adiciona un arco entre dos estaciones
     """
-    edge = gr.getEdge(analyzer['connections'], origin, destination)
-    if edge is None:
-        gr.addEdge(analyzer['connections'], origin, destination, distance)
-    return analyzer
+    try:
+        edge = gr.getEdge(analyzer['connections'], origin, destination)
+        if edge is None:
+            gr.addEdge(analyzer['connections'], origin, destination, distance)
+        return analyzer
+
+    except Exception as exp:
+        error.reraise(exp, 'model:addConnections')
+
 
 
 # ==============================
@@ -103,7 +119,7 @@ def addConnection(analyzer, origin, destination, distance):
 # ==============================
 
 
-def totalStops(analyzer):
+def totalLandingPoints(analyzer):
     """
     Retorna el total de estaciones (vertices) del grafo
     """
@@ -117,7 +133,14 @@ def totalConnections(analyzer):
     return gr.numEdges(analyzer['connections'])
 
 
-def formatVertex(service):
+def totalCountries(analyzer):
+    """
+    Retorna el total arcos del grafo
+    """
+    return gr.numEdges(analyzer['connections'])
+
+
+def formatOriginVertex(service):
     """
     Se formatea el nombrer del vertice con el id de la estación
     seguido de la ruta.
@@ -126,6 +149,14 @@ def formatVertex(service):
     name = name + service['cable_id']
     return name
 
+def formatDestinationVertex(service):
+    """
+    Se formatea el nombrer del vertice con el id de la estación
+    seguido de la ruta.
+    """
+    name = service['destination'] + '-'
+    name = name + service['cable_id']
+    return name
 
 # ==============================
 # Funciones utilizadas para comparar elementos dentro de una lista

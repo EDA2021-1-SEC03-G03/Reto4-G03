@@ -56,15 +56,11 @@ def loadServices(analyzer, servicesfile):
     servicesfile = cf.data_dir + servicesfile
     input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
                                 delimiter=",")
-    lastservice = None
+
     for service in input_file:
-        if lastservice is not None:
-            sameservice = lastservice['cable_id'] == service['cable_id']
-            name = '\ufefforigin'
-            samebusStop = lastservice[name] == service[name]
-            if sameservice and not samebusStop:
-                model.addStopConnection(analyzer, lastservice, service)
-        lastservice = service
+
+        model.addLandingConnections(analyzer, service)
+
     return analyzer
 
 
@@ -72,11 +68,11 @@ def loadServices(analyzer, servicesfile):
 
 # Funciones de consulta sobre el catálogo
 
-def totalStops(analyzer):
+def totalLandingPoints(analyzer):
     """
     Total de paradas de autobus
     """
-    return model.totalStops(analyzer)
+    return model.totalLandingPoints(analyzer)
 
 
 def totalConnections(analyzer):
@@ -84,3 +80,10 @@ def totalConnections(analyzer):
     Total de enlaces entre las paradas
     """
     return model.totalConnections(analyzer)
+
+
+def totalCountries(analyzer):
+    """
+    Total de enlaces entre las paradas
+    """
+    return model.totalCountries(analyzer)

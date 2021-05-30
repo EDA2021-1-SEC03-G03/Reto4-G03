@@ -71,15 +71,26 @@ Menu principal
 """
 while True:
     printMenu()
-    inputs = input('Seleccione una opción para continuar\n')
+    inputs = input('Seleccione una opción para continuar\n>')
     if int(inputs[0]) == 1:
         print("\nInicializando....")
         # cont es el controlador que se usará de acá en adelante
         cont = controller.init()
 
     elif int(inputs[0]) == 2:
-        print("Cargando información de los archivos ....")
-        optionTwo(cont)
+        print("Cargando información de las rutas....")
+        controller.loadServices(cont, servicefile)
+        numVertex = controller.totalLandingPoints(cont)
+        numEdges = controller.totalConnections(cont)
+        numCountries = controller.totalCountries(cont)
+        #firstVertex
+        #lastVertex
+
+        print('Numero de landing points: ' + str(numVertex))
+        print('Numero de conexiones: ' + str(numEdges))
+        print('Numero de paises: ' + str(numCountries))
+        print('\n')
+
 
     elif int(inputs[0]) == 3:
         print("Cargando información de los archivos ....")
