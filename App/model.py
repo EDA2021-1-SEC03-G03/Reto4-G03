@@ -27,7 +27,7 @@
 
 import config as cf
 from DISClib.ADT.graph import gr
-# from DISClib.ADT import list as lt
+from DISClib.ADT import list as lt
 from DISClib.ADT import map as m
 # from DISClib.DataStructures import mapentry as me
 # from DISClib.Algorithms.Sorting import shellsort as sa
@@ -69,8 +69,8 @@ def newAnalyzer():
 def addLandingConnections(analyzer, service):
 
     try:
-        origin = formatOriginVertex(service)
-        destination = formatDestinationVertex(service)
+        origin = service['\ufefforigin']
+        destination = service['destination']
         distance = service['cable_length']
         addPoint(analyzer, origin)
         addPoint(analyzer, destination)
@@ -78,6 +78,7 @@ def addLandingConnections(analyzer, service):
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:addLandingConnections')
+
 
 # ==============================
 # Funciones para agregar informacion al catalogo
@@ -100,14 +101,28 @@ def addConnections(analyzer, origin, destination, distance):
     Adiciona un arco entre dos estaciones
     """
     try:
-        edge = gr.getEdge(analyzer['connections'], origin, destination)
-        if edge is None:
-            gr.addEdge(analyzer['connections'], origin, destination, distance)
+        gr.addEdge(analyzer['connections'], origin, destination, distance)
         return analyzer
 
     except Exception as exp:
         error.reraise(exp, 'model:addConnections')
 
+
+def landingPoints(analyzer, lp):
+
+    try:
+        vertexList = (gr.vertices(analyzer['connections']))
+
+        countryCity = lp['name'].split(', ')
+        
+        for vertex in vertexList:
+            if vertex not in analyzer['landingPoint']:
+                if vertex == str(lp['landing_point_id']):
+                    m.put(analyzer['landingPoint'], vertex, countryCity)
+
+        return analyzer
+    except Exception as exp:
+        error.reraise(exp, 'model:landingPoints')
 
 
 # ==============================
@@ -137,26 +152,16 @@ def totalCountries(analyzer):
     """
     Retorna el total arcos del grafo
     """
-    return gr.numEdges(analyzer['connections'])
+    cont = 0
+    countriesList = lt.newList('ARRAY_LIST')
+    countries = m.valueSet(analyzer['landingPoint'])
 
+    for country in countries:
+        if country[1] not in countriesList:
+            lt.addLast(countriesList, country[1])
+    
+    return lt.size(countriesList)
 
-def formatOriginVertex(service):
-    """
-    Se formatea el nombrer del vertice con el id de la estación
-    seguido de la ruta.
-    """
-    name = service['\ufefforigin'] + '-'
-    name = name + service['cable_id']
-    return name
-
-def formatDestinationVertex(service):
-    """
-    Se formatea el nombrer del vertice con el id de la estación
-    seguido de la ruta.
-    """
-    name = service['destination'] + '-'
-    name = name + service['cable_id']
-    return name
 
 # ==============================
 # Funciones utilizadas para comparar elementos dentro de una lista

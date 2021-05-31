@@ -38,10 +38,6 @@ operación solicitada
 # ___________________________________________________
 
 
-servicefile = 'connections.csv'
-catalog = None
-
-
 def printMenu():
     print("Bienvenido")
     print("1- Inicializar Analizador")
@@ -79,7 +75,8 @@ while True:
 
     elif int(inputs[0]) == 2:
         print("Cargando información de las rutas....")
-        controller.loadServices(cont, servicefile)
+        controller.loadConnections(cont)
+        controller.loadLandingPoints(cont)
         numVertex = controller.totalLandingPoints(cont)
         numEdges = controller.totalConnections(cont)
         numCountries = controller.totalCountries(cont)
