@@ -31,6 +31,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as m
 # from DISClib.DataStructures import mapentry as me
 # from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Graphs import scc as sc
 from DISClib.Utils import error as error
 assert cf
 
@@ -44,14 +45,11 @@ def newAnalyzer():
     try:
         analyzer = {'landingPoint': None,
                     'connections': None,
-                    'country': None,
-        
-                   }
-
+                    'country': None}
 
         analyzer['landingPoint'] = m.newMap(numelements=14000,
-                                     maptype='PROBING',
-                                     comparefunction=compareStopIds)
+                                            maptype='PROBING',
+                                            comparefunction=compareStopIds)
 
         analyzer['connections'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
@@ -114,7 +112,7 @@ def landingPoints(analyzer, lp):
         vertexList = (gr.vertices(analyzer['connections']))
 
         countryCity = lp['name'].split(', ')
-        
+
         for vertex in vertexList:
             if vertex not in analyzer['landingPoint']:
                 if vertex == str(lp['landing_point_id']):
@@ -132,6 +130,11 @@ def landingPoints(analyzer, lp):
 # ==============================
 # Funciones de consulta
 # ==============================
+
+def clusters(graph, land1, land2):
+    components = sc.KosarajuSCC(graph)
+    nocomponents = components['components']
+    print(nocomponents)
 
 
 def totalLandingPoints(analyzer):
@@ -152,14 +155,13 @@ def totalCountries(analyzer):
     """
     Retorna el total arcos del grafo
     """
-    cont = 0
     countriesList = lt.newList('ARRAY_LIST')
     countries = m.valueSet(analyzer['landingPoint'])
 
     for country in countries:
         if country[1] not in countriesList:
             lt.addLast(countriesList, country[1])
-    
+
     return lt.size(countriesList)
 
 

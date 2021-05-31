@@ -107,3 +107,7 @@ def totalCountries(analyzer):
     Total de enlaces entre las paradas
     """
     return model.totalCountries(analyzer)
+
+
+def clusters(graph, land1, land2):
+    return model.clusters(graph, land1, land2)
