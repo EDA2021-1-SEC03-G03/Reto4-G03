@@ -45,7 +45,7 @@ def newAnalyzer():
         analyzer = {'landingPoint': None,
                     'connections': None,
                     'country': None,
-        
+                    'vertex': None
                    }
 
 
@@ -53,10 +53,18 @@ def newAnalyzer():
                                      maptype='PROBING',
                                      comparefunction=compareStopIds)
 
+        analyzer['country'] = m.newMap(numelements=14000,
+                                     maptype='PROBING',
+                                     comparefunction=compareStopIds)
+                                     
+
         analyzer['connections'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
                                               comparefunction=compareStopIds)
+
+        analyzer['vertex'] = lt.newList('ARRAY_LIST')
+
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
@@ -72,8 +80,14 @@ def addLandingConnections(analyzer, service):
         origin = service['\ufefforigin']
         destination = service['destination']
         distance = service['cable_length']
+
         addPoint(analyzer, origin)
         addPoint(analyzer, destination)
+
+        if origin not in analyzer['vertex'] or destination not in analyzer['vertex']:
+            lt.addLast(analyzer['vertex'], origin)
+            lt.addLast(analyzer['vertex'], destination)
+        
         addConnections(analyzer, origin, destination, distance)
         return analyzer
     except Exception as exp:
@@ -111,20 +125,34 @@ def addConnections(analyzer, origin, destination, distance):
 def landingPoints(analyzer, lp):
 
     try:
-        vertexList = (gr.vertices(analyzer['connections']))
+        latitud = lp['latitude']
+        longitud = lp['longitude']
+        coordenates = (latitud, longitud)
+        capitalCoordenates = (lp['name'], coordenates)
 
-        countryCity = lp['name'].split(', ')
-        
-        for vertex in vertexList:
-            if vertex not in analyzer['landingPoint']:
-                if vertex == str(lp['landing_point_id']):
-                    m.put(analyzer['landingPoint'], vertex, countryCity)
+        m.put(analyzer['landingPoint'], lp['landing_point_id'], capitalCoordenates)
 
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:landingPoints')
 
 
+def countries(analyzer, country):
+
+    try:
+
+        capital = m.newMap(numelements=3, maptype='PROBING')
+        latitud = country['CapitalLatitude']
+        longitud = country['CapitalLongitude']
+        coordenates = (latitud, longitud)
+
+        m.put(capital, country['CapitalName'], coordenates)  
+        
+        m.put(analyzer['country'], country['CountryName'], capital)  
+
+        return analyzer
+    except Exception as exp:
+        error.reraise(exp, 'model:countries')
 # ==============================
 # Funciones para creacion de datos
 # ==============================
@@ -152,15 +180,23 @@ def totalCountries(analyzer):
     """
     Retorna el total arcos del grafo
     """
-    cont = 0
-    countriesList = lt.newList('ARRAY_LIST')
-    countries = m.valueSet(analyzer['landingPoint'])
+    return m.size(analyzer['country'])
 
-    for country in countries:
-        if country[1] not in countriesList:
-            lt.addLast(countriesList, country[1])
+
+def info(analyzer):
+    """
+    Retorna el total arcos del grafo
+    """
+
+    first = lt.firstElement(analyzer['vertex'])
+
+    countryCity = m.get(analyzer['landingPoint'], first)
+    coordenates = countryCity['value'][1]
+    name = countryCity['value'][0]
     
-    return lt.size(countriesList)
+    vertex = (first, name, coordenates)
+
+    return vertex
 
 
 # ==============================

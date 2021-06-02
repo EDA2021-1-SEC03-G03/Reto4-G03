@@ -77,15 +77,18 @@ while True:
         print("Cargando información de las rutas....")
         controller.loadConnections(cont)
         controller.loadLandingPoints(cont)
+        controller.loadCountries(cont)
         numVertex = controller.totalLandingPoints(cont)
         numEdges = controller.totalConnections(cont)
         numCountries = controller.totalCountries(cont)
-        #firstVertex
-        #lastVertex
+        firstVertex = controller.info(cont)
+        lastVertex = controller.info(cont)
 
         print('Numero de landing points: ' + str(numVertex))
         print('Numero de conexiones: ' + str(numEdges))
         print('Numero de paises: ' + str(numCountries))
+        print('Primer vertice: ' + str(firstVertex))
+        print('Ultimo vertice: ' + str(lastVertex))
         print('\n')
 
 
