@@ -94,8 +94,7 @@ while True:
         lp1 = input("Inserte el nombre del primer landing point: ")
         lp2 = input("Inserte el nombre del segundo landing point: ")
 
-        controller.clusterSearch(cont, lp1, lp2)
-        pass
+        print(controller.clusterSearch(cont["connections"], lp1, lp2))
 
     elif int(inputs[0]) == 4:
         print("Cargando información de los archivos ....")

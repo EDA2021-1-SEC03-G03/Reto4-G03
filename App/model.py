@@ -31,6 +31,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as m
 # from DISClib.DataStructures import mapentry as me
 # from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Graphs import scc as sc
 from DISClib.Utils import error as error
 assert cf
 
@@ -45,18 +46,15 @@ def newAnalyzer():
         analyzer = {'landingPoint': None,
                     'connections': None,
                     'country': None,
-                    'vertex': None
-                   }
-
+                    'vertex': None}
 
         analyzer['landingPoint'] = m.newMap(numelements=14000,
-                                     maptype='PROBING',
-                                     comparefunction=compareStopIds)
+                                            maptype='PROBING',
+                                            comparefunction=compareStopIds)
 
         analyzer['country'] = m.newMap(numelements=14000,
-                                     maptype='PROBING',
-                                     comparefunction=compareStopIds)
-                                     
+                                       maptype='PROBING',
+                                       comparefunction=compareStopIds)
 
         analyzer['connections'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
@@ -83,11 +81,13 @@ def addLandingConnections(analyzer, service):
 
         addPoint(analyzer, origin)
         addPoint(analyzer, destination)
+        op1 = origin not in analyzer['vertex']
+        op2 = destination not in analyzer['vertex']
 
-        if origin not in analyzer['vertex'] or destination not in analyzer['vertex']:
+        if op1 or op2:
             lt.addLast(analyzer['vertex'], origin)
             lt.addLast(analyzer['vertex'], destination)
-        
+
         addConnections(analyzer, origin, destination, distance)
         return analyzer
     except Exception as exp:
@@ -131,8 +131,7 @@ def landingPoints(analyzer, lp):
         coordenates = (latitud, longitud)
 
         m.put(country, 'Name', lp['name'])
-        m.put(country, 'Coordenates', coordenates)        
-
+        m.put(country, 'Coordenates', coordenates)
         m.put(analyzer['landingPoint'], lp['landing_point_id'], country)
 
         return analyzer
@@ -155,8 +154,7 @@ def countries(analyzer, country):
         m.put(capital, 'ContinentName', country['ContinentName'])
         m.put(capital, 'Population', country['Population'])
         m.put(capital, 'Internet users', country['Internet users'])
-        
-        m.put(analyzer['country'], country['CountryName'], capital)  
+        m.put(analyzer['country'], country['CountryName'], capital)
 
         return analyzer
     except Exception as exp:
@@ -202,7 +200,6 @@ def firstInfo(analyzer):
     countryDict = countryCity['value']
     coordenates = m.get(countryDict, 'Coordenates')['value']
     name = m.get(countryDict, 'Name')['value']
-    
     vertex = (first, name, coordenates)
 
     return vertex
@@ -230,13 +227,15 @@ def lastInfo(analyzer):
 
     return vertex
 
+
 # REQ1
 def clusterSearch(analyzer, lp1, lp2):
     """
     Total de enlaces entre las paradas
     """
-    
-    return None
+    scc = sc.KosarajuSCC(analyzer)
+    question = sc.stronglyConnected(scc, lp1, lp2)
+    return scc["components"], question
 
 # ==============================
 # Funciones utilizadas para comparar elementos dentro de una lista
