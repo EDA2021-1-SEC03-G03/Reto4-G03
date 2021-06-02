@@ -93,7 +93,10 @@ while True:
 
 
     elif int(inputs[0]) == 3:
-        print("Cargando información de los archivos ....")
+        lp1 = input("Inserte el nombre del primer landing point: ")
+        lp2 = input("Inserte el nombre del segundo landing point: ")
+
+        controller.clusterSearch(cont, lp1, lp2)
         pass
 
     elif int(inputs[0]) == 4:

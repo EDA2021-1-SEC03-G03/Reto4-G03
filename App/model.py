@@ -230,6 +230,13 @@ def lastInfo(analyzer):
 
     return vertex
 
+# REQ1
+def clusterSearch(analyzer, lp1, lp2):
+    """
+    Total de enlaces entre las paradas
+    """
+    return None
+
 # ==============================
 # Funciones utilizadas para comparar elementos dentro de una lista
 # ==============================

@@ -138,3 +138,11 @@ def lastInfo(analyzer):
     Total de enlaces entre las paradas
     """
     return model.lastInfo(analyzer)
+
+
+# REQ 1
+def clusterSearch(analyzer, lp1, lp2):
+    """
+    Total de enlaces entre las paradas
+    """
+    return model.clusterSearch(analyzer, lp1, lp2)
