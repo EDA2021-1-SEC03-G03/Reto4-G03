@@ -77,13 +77,31 @@ def loadLandingPoints(analyzer):
     input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
                                 delimiter=",")
 
-    for entry in input_file:
+    for lp in input_file:
 
-        model.landingPoints(analyzer, entry)
+        model.landingPoints(analyzer, lp)
 
     return analyzer
 
 
+def loadCountries(analyzer):
+    """
+    Carga los datos de los archivos CSV en el modelo.
+    Se crea un arco entre cada par de estaciones que
+    pertenecen al mismo servicio y van en el mismo sentido.
+
+    addRouteConnection crea conexiones entre diferentes rutas
+    servidas en una misma estación.
+    """
+    servicesfile = cf.data_dir + "countries.csv"
+    input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
+                                delimiter=",")
+
+    for country in input_file:
+
+        model.countries(analyzer, country)
+
+    return analyzer
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
@@ -107,3 +125,24 @@ def totalCountries(analyzer):
     Total de enlaces entre las paradas
     """
     return model.totalCountries(analyzer)
+
+def firstInfo(analyzer):
+    """
+    Total de enlaces entre las paradas
+    """
+    return model.firstInfo(analyzer)
+
+
+def lastInfo(analyzer):
+    """
+    Total de enlaces entre las paradas
+    """
+    return model.lastInfo(analyzer)
+
+
+# REQ 1
+def clusterSearch(analyzer, lp1, lp2):
+    """
+    Total de enlaces entre las paradas
+    """
+    return model.clusterSearch(analyzer, lp1, lp2)

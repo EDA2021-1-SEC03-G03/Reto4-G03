@@ -77,20 +77,26 @@ while True:
         print("Cargando información de las rutas....")
         controller.loadConnections(cont)
         controller.loadLandingPoints(cont)
+        controller.loadCountries(cont)
         numVertex = controller.totalLandingPoints(cont)
         numEdges = controller.totalConnections(cont)
         numCountries = controller.totalCountries(cont)
-        #firstVertex
-        #lastVertex
+        firstVertex = controller.firstInfo(cont)
+        lastVertex = controller.lastInfo(cont)
 
         print('Numero de landing points: ' + str(numVertex))
         print('Numero de conexiones: ' + str(numEdges))
         print('Numero de paises: ' + str(numCountries))
+        print('Primer vertice: ' + str(firstVertex))
+        print('Ultimo vertice: ' + str(lastVertex))
         print('\n')
 
 
     elif int(inputs[0]) == 3:
-        print("Cargando información de los archivos ....")
+        lp1 = input("Inserte el nombre del primer landing point: ")
+        lp2 = input("Inserte el nombre del segundo landing point: ")
+
+        controller.clusterSearch(cont, lp1, lp2)
         pass
 
     elif int(inputs[0]) == 4:

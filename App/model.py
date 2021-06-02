@@ -45,7 +45,7 @@ def newAnalyzer():
         analyzer = {'landingPoint': None,
                     'connections': None,
                     'country': None,
-        
+                    'vertex': None
                    }
 
 
@@ -53,10 +53,18 @@ def newAnalyzer():
                                      maptype='PROBING',
                                      comparefunction=compareStopIds)
 
+        analyzer['country'] = m.newMap(numelements=14000,
+                                     maptype='PROBING',
+                                     comparefunction=compareStopIds)
+                                     
+
         analyzer['connections'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
                                               comparefunction=compareStopIds)
+
+        analyzer['vertex'] = lt.newList('ARRAY_LIST')
+
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
@@ -72,8 +80,14 @@ def addLandingConnections(analyzer, service):
         origin = service['\ufefforigin']
         destination = service['destination']
         distance = service['cable_length']
+
         addPoint(analyzer, origin)
         addPoint(analyzer, destination)
+
+        if origin not in analyzer['vertex'] or destination not in analyzer['vertex']:
+            lt.addLast(analyzer['vertex'], origin)
+            lt.addLast(analyzer['vertex'], destination)
+        
         addConnections(analyzer, origin, destination, distance)
         return analyzer
     except Exception as exp:
@@ -111,20 +125,42 @@ def addConnections(analyzer, origin, destination, distance):
 def landingPoints(analyzer, lp):
 
     try:
-        vertexList = (gr.vertices(analyzer['connections']))
+        country = m.newMap(numelements=5, maptype='PROBING')
+        latitud = lp['latitude']
+        longitud = lp['longitude']
+        coordenates = (latitud, longitud)
 
-        countryCity = lp['name'].split(', ')
-        
-        for vertex in vertexList:
-            if vertex not in analyzer['landingPoint']:
-                if vertex == str(lp['landing_point_id']):
-                    m.put(analyzer['landingPoint'], vertex, countryCity)
+        m.put(country, 'Name', lp['name'])
+        m.put(country, 'Coordenates', coordenates)        
+
+        m.put(analyzer['landingPoint'], lp['landing_point_id'], country)
 
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:landingPoints')
 
 
+def countries(analyzer, country):
+
+    try:
+
+        capital = m.newMap(numelements=13, maptype='PROBING')
+        latitud = country['CapitalLatitude']
+        longitud = country['CapitalLongitude']
+        coordenates = (latitud, longitud)
+
+        m.put(capital, 'CapitalName', country['CapitalName'])
+        m.put(capital, 'Coordenates', coordenates)
+        m.put(capital, 'CountryCode', country['CountryCode'])
+        m.put(capital, 'ContinentName', country['ContinentName'])
+        m.put(capital, 'Population', country['Population'])
+        m.put(capital, 'Internet users', country['Internet users'])
+        
+        m.put(analyzer['country'], country['CountryName'], capital)  
+
+        return analyzer
+    except Exception as exp:
+        error.reraise(exp, 'model:countries')
 # ==============================
 # Funciones para creacion de datos
 # ==============================
@@ -152,16 +188,54 @@ def totalCountries(analyzer):
     """
     Retorna el total arcos del grafo
     """
-    cont = 0
-    countriesList = lt.newList('ARRAY_LIST')
-    countries = m.valueSet(analyzer['landingPoint'])
+    return m.size(analyzer['country'])
 
-    for country in countries:
-        if country[1] not in countriesList:
-            lt.addLast(countriesList, country[1])
+
+def firstInfo(analyzer):
+    """
+    Retorna el total arcos del grafo
+    """
+
+    first = lt.firstElement(analyzer['vertex'])
+
+    countryCity = m.get(analyzer['landingPoint'], first)
+    countryDict = countryCity['value']
+    coordenates = m.get(countryDict, 'Coordenates')['value']
+    name = m.get(countryDict, 'Name')['value']
     
-    return lt.size(countriesList)
+    vertex = (first, name, coordenates)
 
+    return vertex
+
+
+def lastInfo(analyzer):
+    """
+    Retorna el total arcos del grafo
+    """
+
+    last = lt.lastElement(analyzer['vertex'])
+
+    countryCity = m.get(analyzer['landingPoint'], last)
+    countryDict = countryCity['value']
+    name = m.get(countryDict, 'Name')['value']
+    country = name.split(', ')[2]
+    print(country)
+
+    countryInfo = m.get(analyzer['country'], country)
+    countryInfo = countryInfo['value']
+    population = m.get(countryInfo, 'Population')['value']
+    users = m.get(countryInfo, 'Internet users')['value']
+
+    vertex = (population, users)
+
+    return vertex
+
+# REQ1
+def clusterSearch(analyzer, lp1, lp2):
+    """
+    Total de enlaces entre las paradas
+    """
+    return None
 
 # ==============================
 # Funciones utilizadas para comparar elementos dentro de una lista
