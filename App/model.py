@@ -235,6 +235,7 @@ def clusterSearch(analyzer, lp1, lp2):
     """
     Total de enlaces entre las paradas
     """
+    
     return None
 
 # ==============================

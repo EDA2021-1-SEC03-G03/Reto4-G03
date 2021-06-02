@@ -102,6 +102,8 @@ def loadCountries(analyzer):
         model.countries(analyzer, country)
 
     return analyzer
+
+
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
@@ -125,6 +127,7 @@ def totalCountries(analyzer):
     Total de enlaces entre las paradas
     """
     return model.totalCountries(analyzer)
+
 
 def firstInfo(analyzer):
     """

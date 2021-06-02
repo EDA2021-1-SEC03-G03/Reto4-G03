@@ -54,7 +54,6 @@ def printMenu():
 
 def optionTwo(cont):
     print("\nCargando información de los cables...")
-    controller.loadServices(cont, servicefile)
     numedges = controller.totalConnections(cont)
     numvertex = controller.totalStops(cont)
     print('Numero de vertices: ' + str(numvertex))
@@ -90,7 +89,6 @@ while True:
         print('Primer vertice: ' + str(firstVertex))
         print('Ultimo vertice: ' + str(lastVertex))
         print('\n')
-
 
     elif int(inputs[0]) == 3:
         lp1 = input("Inserte el nombre del primer landing point: ")
