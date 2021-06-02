@@ -126,8 +126,15 @@ def totalCountries(analyzer):
     """
     return model.totalCountries(analyzer)
 
-def info(analyzer):
+def firstInfo(analyzer):
     """
     Total de enlaces entre las paradas
     """
-    return model.info(analyzer)
+    return model.firstInfo(analyzer)
+
+
+def lastInfo(analyzer):
+    """
+    Total de enlaces entre las paradas
+    """
+    return model.lastInfo(analyzer)

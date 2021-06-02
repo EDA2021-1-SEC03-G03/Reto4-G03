@@ -81,8 +81,8 @@ while True:
         numVertex = controller.totalLandingPoints(cont)
         numEdges = controller.totalConnections(cont)
         numCountries = controller.totalCountries(cont)
-        firstVertex = controller.info(cont)
-        lastVertex = controller.info(cont)
+        firstVertex = controller.firstInfo(cont)
+        lastVertex = controller.lastInfo(cont)
 
         print('Numero de landing points: ' + str(numVertex))
         print('Numero de conexiones: ' + str(numEdges))

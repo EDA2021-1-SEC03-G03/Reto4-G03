@@ -125,12 +125,15 @@ def addConnections(analyzer, origin, destination, distance):
 def landingPoints(analyzer, lp):
 
     try:
+        country = m.newMap(numelements=5, maptype='PROBING')
         latitud = lp['latitude']
         longitud = lp['longitude']
         coordenates = (latitud, longitud)
-        capitalCoordenates = (lp['name'], coordenates)
 
-        m.put(analyzer['landingPoint'], lp['landing_point_id'], capitalCoordenates)
+        m.put(country, 'Name', lp['name'])
+        m.put(country, 'Coordenates', coordenates)        
+
+        m.put(analyzer['landingPoint'], lp['landing_point_id'], country)
 
         return analyzer
     except Exception as exp:
@@ -141,12 +144,17 @@ def countries(analyzer, country):
 
     try:
 
-        capital = m.newMap(numelements=3, maptype='PROBING')
+        capital = m.newMap(numelements=13, maptype='PROBING')
         latitud = country['CapitalLatitude']
         longitud = country['CapitalLongitude']
         coordenates = (latitud, longitud)
 
-        m.put(capital, country['CapitalName'], coordenates)  
+        m.put(capital, 'CapitalName', country['CapitalName'])
+        m.put(capital, 'Coordenates', coordenates)
+        m.put(capital, 'CountryCode', country['CountryCode'])
+        m.put(capital, 'ContinentName', country['ContinentName'])
+        m.put(capital, 'Population', country['Population'])
+        m.put(capital, 'Internet users', country['Internet users'])
         
         m.put(analyzer['country'], country['CountryName'], capital)  
 
@@ -183,7 +191,7 @@ def totalCountries(analyzer):
     return m.size(analyzer['country'])
 
 
-def info(analyzer):
+def firstInfo(analyzer):
     """
     Retorna el total arcos del grafo
     """
@@ -191,13 +199,36 @@ def info(analyzer):
     first = lt.firstElement(analyzer['vertex'])
 
     countryCity = m.get(analyzer['landingPoint'], first)
-    coordenates = countryCity['value'][1]
-    name = countryCity['value'][0]
+    countryDict = countryCity['value']
+    coordenates = m.get(countryDict, 'Coordenates')['value']
+    name = m.get(countryDict, 'Name')['value']
     
     vertex = (first, name, coordenates)
 
     return vertex
 
+
+def lastInfo(analyzer):
+    """
+    Retorna el total arcos del grafo
+    """
+
+    last = lt.lastElement(analyzer['vertex'])
+
+    countryCity = m.get(analyzer['landingPoint'], last)
+    countryDict = countryCity['value']
+    name = m.get(countryDict, 'Name')['value']
+    country = name.split(', ')[2]
+    print(country)
+
+    countryInfo = m.get(analyzer['country'], country)
+    countryInfo = countryInfo['value']
+    population = m.get(countryInfo, 'Population')['value']
+    users = m.get(countryInfo, 'Internet users')['value']
+
+    vertex = (population, users)
+
+    return vertex
 
 # ==============================
 # Funciones utilizadas para comparar elementos dentro de una lista
