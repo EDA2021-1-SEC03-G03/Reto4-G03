@@ -54,6 +54,7 @@ def printMenu():
 
 def optionTwo(cont):
     print("\nCargando información de los cables...")
+    controller.loadServices(cont, servicefile)
     numedges = controller.totalConnections(cont)
     numvertex = controller.totalStops(cont)
     print('Numero de vertices: ' + str(numvertex))
@@ -79,18 +80,18 @@ while True:
         numVertex = controller.totalLandingPoints(cont)
         numEdges = controller.totalConnections(cont)
         numCountries = controller.totalCountries(cont)
-        # firstVertex
-        # lastVertex
+        #firstVertex
+        #lastVertex
 
         print('Numero de landing points: ' + str(numVertex))
         print('Numero de conexiones: ' + str(numEdges))
         print('Numero de paises: ' + str(numCountries))
         print('\n')
 
+
     elif int(inputs[0]) == 3:
-        land1 = input("Por favor Ingrese el primer pais: ")
-        land2 = input("Por favor Ingrese el segundo pais: ")
-        print(controller.clusters(cont["connections "], land1, land2))
+        print("Cargando información de los archivos ....")
+        pass
 
     elif int(inputs[0]) == 4:
         print("Cargando información de los archivos ....")
