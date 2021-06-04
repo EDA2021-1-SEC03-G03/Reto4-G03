@@ -149,3 +149,11 @@ def clusterSearch(analyzer, lp1, lp2):
     Total de enlaces entre las paradas
     """
     return model.clusterSearch(analyzer, lp1, lp2)
+
+
+# REQ 2
+def connectionSearch(analyzer):
+    """
+    Los vertices con mayor cantidad de conexiones
+    """
+    return model.connectionSearch(analyzer)

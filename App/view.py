@@ -19,10 +19,10 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
-
-import config
 import sys
-import controller
+import config
+import threading
+from App import controller
 assert config
 
 
@@ -64,62 +64,72 @@ def optionTwo(cont):
 """
 Menu principal
 """
-while True:
-    printMenu()
-    inputs = input('Seleccione una opción para continuar\n>')
-    if int(inputs[0]) == 1:
-        print("\nInicializando....")
-        # cont es el controlador que se usará de acá en adelante
-        cont = controller.init()
 
-    elif int(inputs[0]) == 2:
-        print("Cargando información de las rutas....")
-        controller.loadConnections(cont)
-        controller.loadLandingPoints(cont)
-        controller.loadCountries(cont)
-        numVertex = controller.totalLandingPoints(cont)
-        numEdges = controller.totalConnections(cont)
-        numCountries = controller.totalCountries(cont)
-        firstVertex = controller.firstInfo(cont)
-        lastVertex = controller.lastInfo(cont)
 
-        print('Numero de landing points: ' + str(numVertex))
-        print('Numero de conexiones: ' + str(numEdges))
-        print('Numero de paises: ' + str(numCountries))
-        print('Primer vertice: ' + str(firstVertex))
-        print('Ultimo vertice: ' + str(lastVertex))
-        print('\n')
+def thread_cycle():
+    while True:
+        printMenu()
+        inputs = input('Seleccione una opción para continuar\n>')
+        if int(inputs[0]) == 1:
+            print("\nInicializando....")
+            # cont es el controlador que se usará de acá en adelante
+            cont = controller.init()
 
-    elif int(inputs[0]) == 3:
-        lp1 = input("Inserte el nombre del primer landing point: ")
-        lp2 = input("Inserte el nombre del segundo landing point: ")
+        elif int(inputs[0]) == 2:
+            print("Cargando información de las rutas....")
+            controller.loadConnections(cont)
+            controller.loadLandingPoints(cont)
+            controller.loadCountries(cont)
+            numVertex = controller.totalLandingPoints(cont)
+            numEdges = controller.totalConnections(cont)
+            numCountries = controller.totalCountries(cont)
+            firstVertex = controller.firstInfo(cont)
+            lastVertex = controller.lastInfo(cont)
 
-        print(controller.clusterSearch(cont["connections"], lp1, lp2))
+            print('Numero de landing points: ' + str(numVertex))
+            print('Numero de conexiones: ' + str(numEdges))
+            print('Numero de paises: ' + str(numCountries))
+            print('Primer vertice: ' + str(firstVertex))
+            print('Ultimo vertice: ' + str(lastVertex))
+            print('\n')
 
-    elif int(inputs[0]) == 4:
-        print("Cargando información de los archivos ....")
-        pass
+        elif int(inputs[0]) == 3:
+            lp1 = input("Inserte el nombre del primer landing point: ")
+            lp2 = input("Inserte el nombre del segundo landing point: ")
 
-    elif int(inputs[0]) == 5:
-        print("Cargando información de los archivos ....")
-        pass
+            print(controller.clusterSearch(cont["connections"], lp1, lp2))
 
-    elif int(inputs[0]) == 6:
-        print("Cargando información de los archivos ....")
-        pass
+        elif int(inputs[0]) == 4:
+            print("Cargando los landing points con mas conexiones")
+            print(controller.connectionSearch(cont))
 
-    elif int(inputs[0]) == 7:
-        print("Cargando información de los archivos ....")
-        pass
+        elif int(inputs[0]) == 5:
+            print("Cargando información de los archivos ....")
+            pass
 
-    elif int(inputs[0]) == 8:
-        print("Cargando información de los archivos ....")
-        pass
+        elif int(inputs[0]) == 6:
+            print("Cargando información de los archivos ....")
+            pass
 
-    elif int(inputs[0]) == 9:
-        print("Cargando información de los archivos ....")
-        pass
+        elif int(inputs[0]) == 7:
+            print("Cargando información de los archivos ....")
+            pass
 
-    else:
-        sys.exit(0)
-sys.exit(0)
+        elif int(inputs[0]) == 8:
+            print("Cargando información de los archivos ....")
+            pass
+
+        elif int(inputs[0]) == 9:
+            print("Cargando información de los archivos ....")
+            pass
+
+        else:
+            sys.exit(0)
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    threading.stack_size(67108864)  # 64MB stack
+    sys.setrecursionlimit(2 ** 20)
+    thread = threading.Thread(target=thread_cycle)
+    thread.start()

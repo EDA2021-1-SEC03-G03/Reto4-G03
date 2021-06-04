@@ -30,7 +30,8 @@ from DISClib.ADT.graph import gr
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as m
 # from DISClib.DataStructures import mapentry as me
-# from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.DataStructures import linkedlistiterator as ite
 from DISClib.Algorithms.Graphs import scc as sc
 from DISClib.Utils import error as error
 assert cf
@@ -131,7 +132,9 @@ def landingPoints(analyzer, lp):
         coordenates = (latitud, longitud)
 
         m.put(country, 'Name', lp['name'])
+        m.put(country, 'Id', lp['id'])
         m.put(country, 'Coordenates', coordenates)
+
         m.put(analyzer['landingPoint'], lp['landing_point_id'], country)
 
         return analyzer
@@ -237,6 +240,28 @@ def clusterSearch(analyzer, lp1, lp2):
     question = sc.stronglyConnected(scc, lp1, lp2)
     return scc["components"], question
 
+
+# REQ2
+def connectionSearch(analyzer):
+    """
+    Total de enlaces entre las paradas
+    """
+    vertexlist = lt.newList('SINGLE_LINKED')
+    vertetex = gr.vertices(analyzer['connections'])
+    iterator = ite.newIterator(vertetex)
+    while ite.hasNext(iterator):
+        pos = ite.next(iterator)
+        number = gr.degree(analyzer['connections'], pos)
+        lt.addLast(vertexlist, (pos, number))
+    finallist = sortreq2(vertexlist)
+    return finallist
+
+
+# REQ 3
+def shortestRoute():
+    return None
+
+
 # ==============================
 # Funciones utilizadas para comparar elementos dentro de una lista
 # ==============================
@@ -255,6 +280,18 @@ def compareStopIds(stop, keyvaluestop):
         return -1
 
 
+def cmpConnections(vertex1, vertex2):
+    return (vertex1[1] > vertex2[1])
+
+
 # ==============================
 # Funciones de ordenamiento
 # ==============================
+
+
+def sortreq2(lista):
+    if lt.isEmpty(lista):
+        lt.newList = 0
+    else:
+        newlist = sa.sort(lista, cmpConnections)
+    return newlist
