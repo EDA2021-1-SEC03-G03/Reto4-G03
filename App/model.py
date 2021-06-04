@@ -259,7 +259,8 @@ def connectionSearch(analyzer):
 
 # REQ 3
 def shortestRoute():
-    return None
+    hola = None
+    return hola
 
 
 # ==============================
