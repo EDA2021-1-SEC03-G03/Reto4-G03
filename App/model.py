@@ -131,6 +131,7 @@ def landingPoints(analyzer, lp):
         coordenates = (latitud, longitud)
 
         m.put(country, 'Name', lp['name'])
+        m.put(country, 'Id', lp['id'])
         m.put(country, 'Coordenates', coordenates)        
 
         m.put(analyzer['landingPoint'], lp['landing_point_id'], country)
@@ -235,8 +236,38 @@ def clusterSearch(analyzer, lp1, lp2):
     """
     Total de enlaces entre las paradas
     """
-    
+
     return None
+
+# REQ2
+# NO SE COMO SABER LAS INTERCONEXIONES DE CADA VERTICE
+def ConnectionSearch(analyzer):
+    """
+    Total de enlaces entre las paradas
+    """
+
+    lpConnections = lt.newList('ARRAY_LIST')
+
+    # iterador para recorrer esa lista y crear una lista de diccionarios
+    #lt.iterator
+    #analyzer['vertex']
+    
+    lpInfo = m.newMap(numelements=1, maptype='PROBING')
+
+    lp = m.get(analyzer['landingPoint'], vertex)
+    lpDict = lp['value']
+    id = m.get(lpDict, 'Id')['value']
+    country = m.get(lpDict, 'Name')['value']
+    name = vertex
+    cables = gr.indegree(analyzer['connections'], vertex)
+
+    m.put(lpInfo, 'Name', name)
+    m.put(lpInfo, 'Country', country)
+    m.put(lpInfo, 'Id', id)
+    m.put(lpInfo, 'Cables', cables)
+
+    return lpConnections
+
 
 # ==============================
 # Funciones utilizadas para comparar elementos dentro de una lista
