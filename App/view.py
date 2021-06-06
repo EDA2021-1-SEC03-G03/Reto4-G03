@@ -49,8 +49,6 @@ def printMenu():
     print("5- Ruta minima para enviar entre paises")
     print("6- Red de expansion minima")
     print("7- Lista de paises afectados")
-    print("8- Ancho de banda maximo por pais")
-    print("9- Ruta minima para enviar datos a una ip")
     print("0- Salir del sistema")
 
 
@@ -132,7 +130,7 @@ def thread_cycle():
                 printreq1(result[0], result[1])
 
         elif int(inputs[0]) == 4:
-            print("Cargando los landing points con mas conexiones")
+            print("Cargando los landing points con mas conexiones...")
             result = controller.connectionSearch(cont)
             printreq2(result)
 
