@@ -19,9 +19,11 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
+
 import sys
 import config
 import threading
+from DISClib.DataStructures import linkedlistiterator as ite
 from App import controller
 assert config
 
@@ -61,6 +63,30 @@ def optionTwo(cont):
     print('El limite de recursion actual: ' + str(sys.getrecursionlimit()))
 
 
+def printreq1(scc, question):
+    print("-------------------------")
+    print("Hay", str(scc), "clústers en el grafo")
+
+    if question is False:
+        print("Los landing points no pertencen al mismo clúster")
+        print("-------------------------")
+    else:
+        print("Los landing points pertencen al mismo clúster")
+        print("-------------------------")
+
+
+def printreq2(lista):
+    print("--------------------------------------------")
+    i = 1
+    iterator = ite.newIterator(lista)
+    while ite.hasNext(iterator) and i < 11:
+        pos = ite.next(iterator)
+        print("\tLanding point:", pos[0],
+              "\n\tNumero de vertices conectados:", pos[1])
+        print("--------------------------------------------")
+        i += 1
+
+
 """
 Menu principal
 """
@@ -97,15 +123,25 @@ def thread_cycle():
             lp1 = input("Inserte el nombre del primer landing point: ")
             lp2 = input("Inserte el nombre del segundo landing point: ")
 
-            print(controller.clusterSearch(cont["connections"], lp1, lp2))
+            result = controller.clusterSearch(cont, lp1, lp2)
+            if result == 0:
+                print("-------------------------")
+                print("Los landing points no existen")
+                print("-------------------------")
+            else:
+                printreq1(result[0], result[1])
 
         elif int(inputs[0]) == 4:
             print("Cargando los landing points con mas conexiones")
-            print(controller.connectionSearch(cont))
+            result = controller.connectionSearch(cont)
+            printreq2(result)
 
         elif int(inputs[0]) == 5:
-            print("Cargando información de los archivos ....")
-            pass
+            country1 = input("Ingrese el primer pais por favor: ")
+            country2 = input("Ingrese el segundo pais por favor: ")
+
+            everything = controller.shortestRoute(cont, country1, country2)
+            print(everything)
 
         elif int(inputs[0]) == 6:
             print("Cargando información de los archivos ....")

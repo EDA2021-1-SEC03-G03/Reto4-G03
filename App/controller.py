@@ -157,3 +157,11 @@ def connectionSearch(analyzer):
     Los vertices con mayor cantidad de conexiones
     """
     return model.connectionSearch(analyzer)
+
+
+# REQ 3
+def shortestRoute(analyzer, country1, country2):
+    """
+    La ruta mas corta entre dos paises
+    """
+    return model.shortestRoute(analyzer, country1, country2)

@@ -24,15 +24,15 @@
  * Dario Correal - Version inicial
  """
 
-
 import config as cf
 from DISClib.ADT.graph import gr
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as m
-# from DISClib.DataStructures import mapentry as me
+from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.DataStructures import linkedlistiterator as ite
 from DISClib.Algorithms.Graphs import scc as sc
+from DISClib.Algorithms.Graphs import dijsktra as dj
 from DISClib.Utils import error as error
 assert cf
 
@@ -236,9 +236,14 @@ def clusterSearch(analyzer, lp1, lp2):
     """
     Total de enlaces entre las paradas
     """
-    scc = sc.KosarajuSCC(analyzer)
-    question = sc.stronglyConnected(scc, lp1, lp2)
-    return scc["components"], question
+    op1 = lt.isPresent(analyzer["vertex"], lp1) 
+    op2 = lt.isPresent(analyzer["vertex"], lp2)
+    if op1 and op2:
+        scc = sc.KosarajuSCC(analyzer["connections"])
+        question = sc.stronglyConnected(scc, lp1, lp2)
+        return scc["components"], question
+    else:
+        return 0
 
 
 # REQ2
@@ -258,9 +263,30 @@ def connectionSearch(analyzer):
 
 
 # REQ 3
-def shortestRoute():
-    hola = None
-    return hola
+def shortestRoute(analyzer, country1, country2):
+    firstsearch = m.get(analyzer['country'], country1)
+    secondsearch = m.get(analyzer['country'], country2)
+    if firstsearch is None or secondsearch is None:
+        return 0
+    else:
+        capital1 = me.getValue(firstsearch)
+        capital2 = me.getValue(secondsearch)
+
+        capi1 = m.get(capital1, "CapitalName")
+        capi2 = m.get(capital2, "CapitalName")
+
+        cap1 = me.getValue(capi1)
+        cap2 = me.getValue(capi2)
+
+        capis1 = m.get(analyzer["landingPoint"], cap1)
+        capis2 = m.get(analyzer["landingPoint"], cap2)
+
+        minpath = dj.Dijkstra(analyzer["connections"], capid1)
+
+        distance = dj.distTo(minpath, capid2)
+        route = dj.pathTo(minpath, capid2)
+
+        return distance, route
 
 
 # ==============================
